@@ -1,20 +1,7 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
-const App: () => React$Node = () => {
-  return (
-    <>
-      <View style={styles.scrollView}>
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionDescription}> Bem Vindo!</Text>
-          <Text style={styles.sectionDescription}> Abaixo </Text>
-        </View>
-      </View>
-    </>
-  );
-};
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -54,5 +41,18 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
+
+const App: () => React$Node = () => {
+  return (
+    <>
+      <View style={styles.scrollView}>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionDescription}> Bem Vindo!</Text>
+          <Text style={styles.sectionDescription}> Abaixo </Text>
+        </View>
+      </View>
+    </>
+  );
+};
 
 export default App;
