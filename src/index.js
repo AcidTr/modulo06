@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
+import './config/ReactotronConfig';
+
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const styles = StyleSheet.create({
@@ -41,6 +43,8 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
+
+console.tron.log('Hello, World!');
 
 const App: () => React$Node = () => {
   return (
