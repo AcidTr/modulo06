@@ -25,12 +25,16 @@ export default class User extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
       getParam: PropTypes.func,
+      navigate: PropTypes.func,
     }).isRequired,
   };
 
   state = {
     stars: [],
     loading: false,
+    page: 1,
+    loadingFooter: false,
+    refreshing: false,
   };
 
   async componentDidMount() {
@@ -43,9 +47,43 @@ export default class User extends Component {
     this.setState({ stars: response.data, loading: false });
   }
 
+  handleNextPage = async () => {
+    const { navigation } = this.props;
+    this.setState({ loadingFooter: true });
+    const { stars } = this.state;
+    let { page } = this.state;
+    const user = navigation.getParam('user');
+    page += 1;
+    const response = await api.get(`/users/${user.login}/starred?page=${page}`);
+
+    this.setState({
+      stars: [...stars, ...response.data],
+      loadingFooter: false,
+      page,
+    });
+  };
+
+  handleRefresh = async () => {
+    const { navigation } = this.props;
+    this.setState({ refreshing: true });
+    const user = navigation.getParam('user');
+    const response = await api.get(`/users/${user.login}/starred`);
+
+    this.setState({
+      stars: response.data,
+      refreshing: false,
+      page: 1,
+    });
+  };
+
+  handleRepoWebView = repository => {
+    const { navigation } = this.props;
+    navigation.navigate('Repository', { repository });
+  };
+
   render() {
     const { navigation } = this.props;
-    const { stars, loading } = this.state;
+    const { stars, loading, loadingFooter, refreshing } = this.state;
     const user = navigation.getParam('user');
 
     return (
@@ -61,8 +99,12 @@ export default class User extends Component {
           <Stars
             data={stars}
             keyExtractor={star => String(star.id)}
+            onEndReached={this.handleNextPage}
+            onEndReachedThreshold={0.2}
+            onRefresh={this.handleRefresh}
+            refreshing={refreshing}
             renderItem={({ item }) => (
-              <Starred>
+              <Starred onPress={() => this.handleRepoWebView(item)}>
                 <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
                 <Info>
                   <Title>{item.name}</Title>
@@ -72,6 +114,7 @@ export default class User extends Component {
             )}
           />
         )}
+        {loadingFooter ? <ActivityIndicator /> : <></>}
       </Container>
     );
   }
